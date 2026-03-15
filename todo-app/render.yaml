@@ -2,8 +2,10 @@ services:
   - type: web
     name: be-todo
     runtime: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    repo: https://github.com/UgayNobu/UgayNobu_02240369_DSO101_2026
+    branch: main
+    dockerfilePath: ./todo-app/backend/Dockerfile
+    dockerContext: ./todo-app/backend
     region: singapore
     plan: free
     envVars:
@@ -21,12 +23,13 @@ services:
         value: "true"
       - key: PORT
         value: "5000"
-
   - type: web
     name: fe-todo
     runtime: docker
-    dockerfilePath: ./frontend/Dockerfile
-    dockerContext: ./frontend
+    repo: https://github.com/UgayNobu/UgayNobu_02240369_DSO101_2026
+    branch: main
+    dockerfilePath: ./todo-app/frontend/Dockerfile
+    dockerContext: ./todo-app/frontend
     region: singapore
     plan: free
     envVars:
