@@ -1,8 +1,7 @@
 services:
   - type: web
-    name: be-todo
+    name: be-todo-github
     runtime: docker
-    repo: https://github.com/UgayNobu/UgayNobu_02240369_DSO101_2026
     branch: main
     dockerfilePath: ./todo-app/backend/Dockerfile
     dockerContext: ./todo-app/backend
@@ -24,9 +23,8 @@ services:
       - key: PORT
         value: "5000"
   - type: web
-    name: fe-todo
+    name: fe-todo-github
     runtime: docker
-    repo: https://github.com/UgayNobu/UgayNobu_02240369_DSO101_2026
     branch: main
     dockerfilePath: ./todo-app/frontend/Dockerfile
     dockerContext: ./todo-app/frontend
@@ -34,4 +32,4 @@ services:
     plan: free
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: https://be-todo.onrender.com
+        value: https://be-todo-github.onrender.com
