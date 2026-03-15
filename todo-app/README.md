@@ -1,8 +1,3 @@
-I can see all your screenshots and the assignment PDF. Let me write a comprehensive README.md for your GitHub repository covering Part A and Part B with proper image paths.
-Based on your screenshots folder in the todo-app directory, here's the complete README:
-
-Open VS Code and create/replace the README.md at the root of your repo (UgayNobu_02240369_DSO101_2026/README.md). Paste this entire content:
-markdown# UgayNobu_02240369_DSO101_2026
 # DSO101 Assignment I - CI/CD Pipeline
 
 **Student Name:** UgayNobu  
