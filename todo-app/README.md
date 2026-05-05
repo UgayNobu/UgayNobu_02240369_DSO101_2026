@@ -21,7 +21,7 @@ Logged into Docker Hub from the terminal:
 docker login
 ```
 
-![Docker Login](todo-app/images/Screenshot_2026-03-15_at_6_52_12_PM.png)
+![Docker Login](todo-app/images/Screenshot_2026-03-15_at_6_59_12_PM.png)
 
 ---
 
@@ -49,15 +49,17 @@ docker buildx build --platform linux/amd64 \
   --push --provenance=false --sbom=false .
 ```
 
+![Frontend Dockerfile](todo-app/images/Screenshot_2026-03-15_at_7_01_26_PM.png)
+
 ![Frontend Build and Push](todo-app/images/Screenshot_2026-03-15_at_7_01_59_PM.png)
 
 ---
 
 ### Step 4: Verify Images on Docker Hub
 
-Both images successfully pushed to `https://hub.docker.com/u/ugaynobu`:
+Both images successfully pushed to Docker Hub and visible in Docker Desktop:
 
-![Docker Hub Repositories](todo-app/images/Screenshot_2026-03-15_at_6_54_16_PM.png)
+![Docker Desktop Images](todo-app/images/Screenshot_2026-03-15_at_8_13_23_PM.png)
 
 ---
 
@@ -76,9 +78,22 @@ Both images successfully pushed to `https://hub.docker.com/u/ugaynobu`:
 
 1. Clicked **New +** → **Web Service** → **Existing Image**
 2. Entered image: `ugaynobu/be-todo:02240369`
-3. Added environment variables: `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `DB_SSL`, `PORT`
+
+Platform error encountered — image was not built for `linux/amd64`:
+
+![Backend Platform Error](todo-app/images/Screenshot_2026-03-15_at_8_15_22_PM.png)
+
+Rebuilt both images using `docker buildx` with the correct platform:
+
+![Backend Rebuild amd64](todo-app/images/Screenshot_2026-03-15_at_8_20_45_PM.png)
+
+![Frontend Rebuild amd64](todo-app/images/Screenshot_2026-03-15_at_8_21_02_PM.png)
+
+Backend image accepted on Render:
 
 ![Backend Image Accepted](todo-app/images/Screenshot_2026-03-15_at_8_22_52_PM.png)
+
+3. Added environment variables: `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `DB_SSL`, `PORT`
 
 ![Backend Environment Variables](todo-app/images/Screenshot_2026-03-15_at_8_27_48_PM.png)
 
@@ -99,6 +114,40 @@ Both images successfully pushed to `https://hub.docker.com/u/ugaynobu`:
 ![Frontend Deploying](todo-app/images/Screenshot_2026-03-15_at_8_31_32_PM.png)
 
 **Frontend URL:** `https://fe-todo-t7y5.onrender.com`
+
+---
+
+### Step 8: Push to GitHub
+
+```bash
+git add .
+git commit -m "Part B: Add render.yaml and env.production files"
+git push origin main
+```
+
+![GitHub Repository](todo-app/images/Screenshot_2026-03-15_at_11_02_32_PM.png)
+
+---
+
+### Step 9: Create Render Blueprint
+
+1. Clicked **New +** → **Blueprint**
+2. Selected GitHub repo: `UgayNobu/UgayNobu_02240369_DSO101_2026`
+3. Set Blueprint Name: `todo-app-blueprint`, Branch: `main`, Blueprint Path: `todo-app/render.yaml`
+
+![Blueprint Configuration](todo-app/images/Screenshot_2026-03-15_at_11_07_20_PM.png)
+
+---
+
+### Step 10: Deploy via Blueprint
+
+Render detected the `render.yaml` and created two new services automatically:
+
+![Blueprint Sync](todo-app/images/Screenshot_2026-03-15_at_11_24_22_PM.png)
+
+![Blueprint Sync Progress](todo-app/images/Screenshot_2026-03-15_at_11_35_01_PM.png)
+
+![Services Deployed](todo-app/images/Screenshot_2026-03-15_at_11_39_07_PM.png)
 
 ---
 
@@ -209,6 +258,8 @@ git push origin main
 ```
 
 ---
+
+### Step 7: 
 
 ### Part B Result
 
