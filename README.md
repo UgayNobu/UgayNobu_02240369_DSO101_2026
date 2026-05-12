@@ -1,3 +1,4 @@
+# UgayNobu_02240369_DSO101_2026
 # DSO101 Assignment I - CI/CD Pipeline
 
 **Student Name:** UgayNobu  
@@ -14,17 +15,23 @@ In Part A, the backend and frontend Docker images were built locally and pushed 
 ---
 
 ### Step 1: Login to Docker Hub
+
+Logged into Docker Hub from the terminal:
 ```bash
 docker login
 ```
 
-![Docker Login](todo-app/images/Screenshot_2026-03-15_at_6_52_12_PM.png)
+![Docker Login](todo-app/images/Screenshot_2026-03-15_at_6_59_12_PM.png)
 
 ---
 
 ### Step 2: Build and Push Backend Image
+
+Created `backend/Dockerfile` and built the image for `linux/amd64` platform:
 ```bash
-docker buildx build --platform linux/amd64 -t ugaynobu/be-todo:02240369 --push --provenance=false --sbom=false .
+docker buildx build --platform linux/amd64 \
+  -t ugaynobu/be-todo:02240369 \
+  --push --provenance=false --sbom=false .
 ```
 
 ![Backend Build](todo-app/images/Screenshot_2026-03-15_at_7_00_24_PM.png)
@@ -34,9 +41,15 @@ docker buildx build --platform linux/amd64 -t ugaynobu/be-todo:02240369 --push -
 ---
 
 ### Step 3: Build and Push Frontend Image
+
+Created `frontend/Dockerfile` and built the frontend image:
 ```bash
-docker buildx build --platform linux/amd64 -t ugaynobu/fe-todo:02240369 --push --provenance=false --sbom=false .
+docker buildx build --platform linux/amd64 \
+  -t ugaynobu/fe-todo:02240369 \
+  --push --provenance=false --sbom=false .
 ```
+
+![Frontend Dockerfile](todo-app/images/Screenshot_2026-03-15_at_7_01_26_PM.png)
 
 ![Frontend Build and Push](todo-app/images/Screenshot_2026-03-15_at_7_01_59_PM.png)
 
@@ -44,11 +57,18 @@ docker buildx build --platform linux/amd64 -t ugaynobu/fe-todo:02240369 --push -
 
 ### Step 4: Verify Images on Docker Hub
 
-![Docker Hub Repositories](todo-app/images/Screenshot_2026-03-15_at_6_54_16_PM.png)
+Both images successfully pushed to Docker Hub and visible in Docker Desktop:
+
+![Docker Desktop Images](todo-app/images/Screenshot_2026-03-15_at_8_13_23_PM.png)
 
 ---
 
 ### Step 5: Create PostgreSQL Database on Render
+
+1. Logged into [render.com](https://render.com)
+2. Clicked **New +** → **PostgreSQL**
+3. Set Name: `todo-db`, Region: Singapore, Plan: Free
+4. Clicked **Create Database**
 
 ![Render PostgreSQL](todo-app/images/Screenshot_2026-03-15_at_8_01_38_PM.png)
 
@@ -56,13 +76,30 @@ docker buildx build --platform linux/amd64 -t ugaynobu/fe-todo:02240369 --push -
 
 ### Step 6: Deploy Backend on Render
 
+1. Clicked **New +** → **Web Service** → **Existing Image**
+2. Entered image: `ugaynobu/be-todo:02240369`
+
+Platform error encountered — image was not built for `linux/amd64`:
+
+![Backend Platform Error](todo-app/images/Screenshot_2026-03-15_at_8_15_22_PM.png)
+
+Rebuilt both images using `docker buildx` with the correct platform:
+
+![Backend Rebuild amd64](todo-app/images/Screenshot_2026-03-15_at_8_20_45_PM.png)
+
+![Frontend Rebuild amd64](todo-app/images/Screenshot_2026-03-15_at_8_21_02_PM.png)
+
+Backend image accepted on Render:
+
 ![Backend Image Accepted](todo-app/images/Screenshot_2026-03-15_at_8_22_52_PM.png)
+
+3. Added environment variables: `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `DB_SSL`, `PORT`
 
 ![Backend Environment Variables](todo-app/images/Screenshot_2026-03-15_at_8_27_48_PM.png)
 
 ![Backend Live](todo-app/images/Screenshot_2026-03-15_at_8_29_00_PM.png)
 
-**Backend URL:** https://be-todo-02240369.onrender.com
+**Backend URL:** `https://be-todo-02240369.onrender.com`
 
 ![Backend Health Check](todo-app/images/Screenshot_2026-03-15_at_8_30_08_PM.png)
 
@@ -70,20 +107,75 @@ docker buildx build --platform linux/amd64 -t ugaynobu/fe-todo:02240369 --push -
 
 ### Step 7: Deploy Frontend on Render
 
+1. Clicked **New +** → **Web Service** → **Existing Image**
+2. Entered image: `ugaynobu/fe-todo:02240369`
+3. Added environment variable: `NEXT_PUBLIC_API_URL=https://be-todo-02240369.onrender.com`
+
 ![Frontend Deploying](todo-app/images/Screenshot_2026-03-15_at_8_31_32_PM.png)
 
-**Frontend URL:** https://fe-todo-t7y5.onrender.com
+**Frontend URL:** `https://fe-todo-t7y5.onrender.com`
+
+---
+
+### Step 8: Push to GitHub
+
+```bash
+git add .
+git commit -m "Part B: Add render.yaml and env.production files"
+git push origin main
+```
+
+![GitHub Repository](todo-app/images/Screenshot_2026-03-15_at_11_02_32_PM.png)
+
+---
+
+### Step 9: Create Render Blueprint
+
+1. Clicked **New +** → **Blueprint**
+2. Selected GitHub repo: `UgayNobu/UgayNobu_02240369_DSO101_2026`
+3. Set Blueprint Name: `todo-app-blueprint`, Branch: `main`, Blueprint Path: `todo-app/render.yaml`
+
+![Blueprint Configuration](todo-app/images/Screenshot_2026-03-15_at_11_07_20_PM.png)
+
+---
+
+### Step 10: Deploy via Blueprint
+
+Render detected the `render.yaml` and created two new services automatically:
+
+![Blueprint Sync](todo-app/images/Screenshot_2026-03-15_at_11_24_22_PM.png)
+
+![Blueprint Sync Progress](todo-app/images/Screenshot_2026-03-15_at_11_35_01_PM.png)
+
+![Services Deployed](todo-app/images/Screenshot_2026-03-15_at_11_39_07_PM.png)
+
+---
+
+### Part A Result
+
+Both services successfully deployed on Render:
+
+- **Backend:** `https://be-todo-02240369.onrender.com`
+- **Frontend:** `https://fe-todo-t7y5.onrender.com`
 
 ---
 
 ## Part B: Automated Image Build and Deployment
 
 ### Overview
-In Part B, Render was configured to automatically build and deploy a new Docker image every time a new commit is pushed to GitHub, using a render.yaml Blueprint file.
+In Part B, Render was configured to automatically build and deploy a new Docker image every time a new commit is pushed to GitHub, using a `render.yaml` Blueprint file.
 
 ---
 
-### Step 1: Create render.yaml Blueprint
+### Step 1: Create `.env.production` Files
+
+Created `backend/.env.production` and `frontend/.env.production` with production environment variables.
+
+---
+
+### Step 2: Create `render.yaml` Blueprint
+
+Created `todo-app/render.yaml`:
 ```yaml
 services:
   - type: web
@@ -122,7 +214,7 @@ services:
 
 ---
 
-### Step 2: Push to GitHub
+### Step 3: Push to GitHub
 ```bash
 git add .
 git commit -m "Part B: Add render.yaml and env.production files"
@@ -133,13 +225,22 @@ git push origin main
 
 ---
 
-### Step 3: Create Render Blueprint
+### Step 4: Create Render Blueprint
+
+1. Clicked **New +** → **Blueprint**
+2. Selected GitHub repo: `UgayNobu/UgayNobu_02240369_DSO101_2026`
+3. Set:
+   - **Blueprint Name:** `todo-app-blueprint`
+   - **Branch:** `main`
+   - **Blueprint Path:** `todo-app/render.yaml`
 
 ![Blueprint Configuration](todo-app/images/Screenshot_2026-03-15_at_11_07_20_PM.png)
 
 ---
 
-### Step 4: Blueprint Sync and Deploy
+### Step 5: Deploy via Blueprint
+
+Render detected the `render.yaml` and created two new services automatically:
 
 ![Blueprint Sync](todo-app/images/Screenshot_2026-03-15_at_11_24_22_PM.png)
 
@@ -147,15 +248,28 @@ git push origin main
 
 ---
 
+### Step 6: Auto-Deploy Verification
+
+Every git push to `main` automatically triggers a new deployment on Render:
+```bash
+git add .
+git commit -m "Part B: Test auto-deploy trigger"
+git push origin main
+```
+
+---
+
+### Step 7: 
+
 ### Part B Result
 
 | Feature | Status |
 |---------|--------|
-| GitHub to Render auto-deploy | Working |
-| render.yaml Blueprint | Configured |
-| Backend auto-build from Dockerfile | Working |
-| Frontend auto-build from Dockerfile | Working |
-| New deploy on every git push | Confirmed |
+| GitHub → Render auto-deploy | ✅ Working |
+| `render.yaml` Blueprint | ✅ Configured |
+| Backend auto-build from Dockerfile | ✅ Working |
+| Frontend auto-build from Dockerfile | ✅ Working |
+| New deploy on every git push | ✅ Confirmed |
 
 ---
 
@@ -163,10 +277,10 @@ git push origin main
 
 | Service | URL |
 |---------|-----|
-| Backend (Part A) | https://be-todo-02240369.onrender.com |
-| Frontend (Part A) | https://fe-todo-t7y5.onrender.com |
-| Backend (Part B) | https://be-todo-github.onrender.com |
-| Frontend (Part B) | https://fe-todo-github.onrender.com |
+| Backend (Part A) | `https://be-todo-02240369.onrender.com` |
+| Frontend (Part A) | `https://fe-todo-t7y5.onrender.com` |
+| Backend (Part B) | `https://be-todo-github.onrender.com` |
+| Frontend (Part B) | `https://fe-todo-github.onrender.com` |
 
 ---
 
