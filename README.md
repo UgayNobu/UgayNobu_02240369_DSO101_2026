@@ -1,4 +1,4 @@
-# UgayNobu_02240369_DSO101_2026
+# UgayNobu_02240369_DSO101_A1
 # DSO101 Assignment I - CI/CD Pipeline
 
 **Student Name:** UgayNobu  
